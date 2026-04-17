@@ -30,7 +30,7 @@ create table if not exists public.jobs (
 
 create table if not exists public.fleets (
   id uuid primary key default gen_random_uuid(),
-  fleet_number integer not null unique,
+  fleet_number text not null unique,
   customer text,
   fuel_type text,
   region text,

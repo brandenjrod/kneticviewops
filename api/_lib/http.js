@@ -78,6 +78,21 @@ function parseMultipart(raw, boundary) {
 
 async function parseIncomingBody(req) {
   if (req.body && typeof req.body === "object" && !Buffer.isBuffer(req.body)) {
+    // Vercel may pre-parse multipart as an object with a rawRequest string field
+    // If so, normalize it the same way we do for raw multipart
+    if (req.body.rawRequest || req.body.formID || req.body.submissionID) {
+      const fields = req.body;
+      let merged = { ...fields };
+      if (fields.rawRequest) {
+        try {
+          const parsed = typeof fields.rawRequest === "string"
+            ? JSON.parse(fields.rawRequest)
+            : fields.rawRequest;
+          merged = { ...fields, ...parsed };
+        } catch (e) {}
+      }
+      return merged;
+    }
     return req.body;
   }
 

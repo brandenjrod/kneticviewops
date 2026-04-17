@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KNETIC VIEW</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <button class="menu-tab" id="menuTab" type="button" hidden>MENU</button>
+
+  <div class="app-shell">
+    <div class="bg-grid"></div>
+
+    <section class="view-shell menu-view" id="menuView">
+      <div class="hero-card">
+        <p class="eyebrow">Main Navigation</p>
+        <h1>KNETIC VIEW</h1>
+        <p class="hero-copy">One surface for fleet ops, testing, metrics, trucking, inventory, and master references so the team can stop living in scattered spreadsheets.</p>
+      </div>
+
+      <div class="menu-grid" id="menuGrid">
+        <button class="menu-card menu-card-top" data-route="fleetops" type="button">
+          <span class="menu-card-kicker">Operations Core</span>
+          <span class="menu-card-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" focusable="false">
+              <path d="M13.5 2 6 13h5l-1 9 8-12h-5.5L13.5 2Z"></path>
+            </svg>
+          </span>
+          <strong>Fleet Ops</strong>
+          <p>Active fleets, projected rig moves, package allocations, job info, and JDS-ready fleet detail screens.</p>
+        </button>
+        <button class="menu-card menu-card-top" data-route="testing" type="button">
+          <span class="menu-card-kicker">Deployment Surface</span>
+          <span class="menu-card-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" focusable="false">
+              <rect x="4" y="5" width="16" height="11" rx="2"></rect>
+              <path d="M9 19h6"></path>
+              <path d="M12 16v3"></path>
+            </svg>
+          </span>
+          <strong>Testing &amp; Deployment</strong>
+          <p>Testing, in queue, ready to deploy, out of service, asset ladders, and PRS upgrades in one emphasized view.</p>
+        </button>
+        <button class="menu-card menu-card-top" data-route="metrics" type="button">
+          <span class="menu-card-kicker">Activity Dashboard</span>
+          <span class="menu-card-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" focusable="false">
+              <path d="M4 18h16"></path>
+              <path d="M7 15V9"></path>
+              <path d="M12 15V6"></path>
+              <path d="M17 15v-3"></path>
+              <path d="m5 14 4-4 3 2 6-6"></path>
+            </svg>
+          </span>
+          <strong>Metrics</strong>
+          <p>Live submission counts, upcoming moves, upgrade progress, and recent operational activity from Supabase.</p>
+        </button>
+        <button class="menu-card menu-card-top" data-route="masterinfo" type="button">
+          <span class="menu-card-kicker">Reference Hub</span>
+          <span class="menu-card-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" focusable="false">
+              <circle cx="12" cy="12" r="9"></circle>
+              <path d="M12 10v6"></path>
+              <path d="M12 7h.01"></path>
+            </svg>
+          </span>
+          <strong>Master Info</strong>
+          <p>Org chart, department tasks, travel schedule, platform links, calculator tools, and setpoint references.</p>
+        </button>
+        <button class="menu-card menu-card-bottom" data-route="inventory" type="button">
+          <span class="menu-card-kicker">Parts Visibility</span>
+          <span class="menu-card-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" focusable="false">
+              <path d="m4 8 8-4 8 4-8 4-8-4Z"></path>
+              <path d="M4 8v8l8 4 8-4V8"></path>
+              <path d="M12 12v8"></path>
+            </svg>
+          </span>
+          <strong>Inventory</strong>
+          <p>Gas decompression and gas electrical inventory with vendor, part number, target quantities, and location details.</p>
+        </button>
+        <button class="menu-card menu-card-bottom" data-route="trucking" type="button">
+          <span class="menu-card-kicker">Transport Board</span>
+          <span class="menu-card-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" focusable="false">
+              <path d="M3 7h11v8H3z"></path>
+              <path d="M14 10h3l3 3v2h-6z"></path>
+              <circle cx="7" cy="17" r="2"></circle>
+              <circle cx="18" cy="17" r="2"></circle>
+            </svg>
+          </span>
+          <strong>Trucking</strong>
+          <p>Live truck roster, PM due tracking, assignments, and Jotform pickup and drop-off intake.</p>
+        </button>
+        <button class="menu-card menu-card-bottom" data-route="training" type="button">
+          <span class="menu-card-kicker">Standards &amp; Growth</span>
+          <span class="menu-card-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" focusable="false">
+              <path d="m14 7 3-3 3 3-3 3"></path>
+              <path d="M17 4 8 13"></path>
+              <path d="m10 17-3 3-3-3 3-3"></path>
+              <path d="M7 20 16 11"></path>
+            </svg>
+          </span>
+          <strong>Training</strong>
+          <p>Standards, drills, performance tracking, and training video space built for tech development.</p>
+        </button>
+      </div>
+    </section>
+
+    <section class="view-shell workspace-view" id="testingView" hidden>
+      <header class="topbar">
+        <div class="title-block">
+          <div class="eyebrow-row">
+            <p class="eyebrow">PRS Operations Surface</p>
+            <button class="login-pill" id="loginTrigger" type="button">Login</button>
+            <span class="auth-badge" id="authBadge" hidden>Permitted Mode</span>
+          </div>
+          <div class="title-row">
+            <div>
+              <p class="eyebrow page-brand">KNETIC VIEW</p>
+              <h1>Testing &amp; Deployment</h1>
+            </div>
+            <form class="search-form" id="searchForm">
+              <span class="search-icon" aria-hidden="true"></span>
+              <label class="sr-only" for="searchType">Search type</label>
+              <select id="searchType" name="searchType">
+                <option value="FLEET">Fleet</option>
+                <option value="HP">HP</option>
+                <option value="LP">LP</option>
+                <option value="HR">HR</option>
+                <option value="CC">CC</option>
+              </select>
+              <label class="sr-only" for="searchInput">Search input</label>
+              <input id="searchInput" name="searchInput" type="text" placeholder="Fleet 157, HP17, or 06-02-001-017">
+              <button type="submit">Go</button>
+            </form>
+          </div>
+        </div>
+        <div class="topbar-meta">
+          <span class="sync-pill" id="syncStatusBadge">Connecting to live data...</span>
+          <span id="readySummary">Ready Packages: <strong>4 packages</strong></span>
+          <span id="testingSummary">Testing Packages: <strong>2 packages</strong></span>
+          <span id="queueSummary">In Queue: <strong>2 packages</strong></span>
+          <button class="topbar-oos" id="oosTrigger" type="button">OOS Assets: <strong id="oosSummary">11 tracked</strong></button>
+        </div>
+      </header>
+
+      <div class="ops-stack">
+        <main class="dashboard">
+          <section class="display-grid" aria-label="PRS status displays">
+            <article class="display-card ready-display" data-glow="green" data-section="ready" tabindex="0">
+              <div class="display-head">
+                <div>
+                  <p class="display-kicker">Deployment Lane</p>
+                  <h2>Ready to Deploy</h2>
+                </div>
+                <span class="status-dot ready" aria-label="Ready to deploy"></span>
+              </div>
+              <p class="display-note">Click anywhere in this cell to bring the ready queue forward.</p>
+              <div class="section-preview" id="readyPreview"></div>
+            </article>
+
+            <article class="display-card testing-display" data-glow="yellow" data-section="testing" tabindex="0">
+              <div class="display-head">
+                <div>
+                  <p class="display-kicker">Test Cell A</p>
+                  <h2>In Testing</h2>
+                </div>
+                <span class="status-dot testing" aria-label="In testing"></span>
+              </div>
+              <p class="display-note">Open this cell to review test packages, notes, and work orders.</p>
+              <div class="section-preview" id="testingPreview"></div>
+            </article>
+
+            <article class="display-card queue-display" data-glow="orange" data-section="queue" tabindex="0">
+              <div class="display-head">
+                <div>
+                  <p class="display-kicker">Worked, Not Tested</p>
+                  <h2>In Queue</h2>
+                </div>
+                <span class="status-dot queue" aria-label="In queue"></span>
+              </div>
+              <p class="display-note">Track packages that are through repairs or prep work and waiting on formal test time.</p>
+              <div class="section-preview" id="queuePreview"></div>
+            </article>
+
+            <article class="display-card inuse-display action-display" data-glow="blue" data-section="inuse" tabindex="0">
+              <div class="display-head">
+                <div>
+                  <p class="display-kicker">Field Status</p>
+                  <h2>In Use</h2>
+                </div>
+                <span class="status-dot inuse" aria-label="In use"></span>
+              </div>
+              <div class="action-body">
+                <div class="mini-fleet-preview" id="fieldFleetPreview"></div>
+                <div class="mini-prs-preview" id="fieldPrsPreview"></div>
+              </div>
+              <div class="testing-summary">
+                <div>
+                  <span class="summary-label">Active fleets</span>
+                  <strong id="activeFleetSummary">25 / 200</strong>
+                </div>
+                <div>
+                  <span class="summary-label">Live packages</span>
+                  <strong id="activePackageSummary">39 packages</strong>
+                </div>
+              </div>
+              <div class="section-preview compact" id="inUsePreview"></div>
+            </article>
+          </section>
+
+          <section class="testing-support-grid">
+            <article class="support-card upgrade-support-card">
+              <div class="section-panel-title">
+                <div>
+                  <p class="display-kicker">LPCC Rollout</p>
+                  <h2>PRS Upgrades</h2>
+                </div>
+                <span class="preview-tag" id="upgradeProgressTag">79% complete</span>
+              </div>
+              <div class="upgrade-mini-grid" id="testingUpgradeGrid"></div>
+            </article>
+
+            <article class="support-card intake-support-card">
+              <div class="section-panel-title">
+                <div>
+                  <p class="display-kicker">Workflow</p>
+                  <h2>Webhook Intake</h2>
+                </div>
+                <span class="preview-tag">Supabase live</span>
+              </div>
+              <p class="drawer-copy">Jotform webhooks now land in secure serverless routes, store raw deliveries for traceability, and normalize usable operational records into Supabase for the live board and metrics views.</p>
+              <div class="support-chip-row">
+                <span class="preview-tag">Webhook Live</span>
+                <span class="preview-tag">Audit Logged</span>
+                <span class="preview-tag">Manual Admin Sync</span>
+              </div>
+            </article>
+          </section>
+
+          <aside class="oos-panel" id="oosPanel" hidden aria-live="polite">
+            <div class="oos-panel-head">
+              <div>
+                <p class="display-kicker">Maintenance Hold</p>
+                <h2>Out of Service</h2>
+              </div>
+              <button class="close-panel" id="closeOosPanel" type="button" aria-label="Close OOS panel">Close</button>
+            </div>
+            <div class="oos-list" id="oosList"></div>
+          </aside>
+        </main>
+
+        <aside class="admin-dock" id="adminDock" hidden>
+          <div class="admin-dock-head">
+            <div>
+              <p class="display-kicker">Permitted Only</p>
+              <h2>Data Edit Console</h2>
+            </div>
+            <span class="preview-tag">Live Sync</span>
+          </div>
+          <div class="mini-table-diagram" aria-hidden="true">
+            <span>Status</span>
+            <span>Allocation</span>
+            <span>HP</span>
+            <span>LP</span>
+            <span>HR</span>
+            <span>CC</span>
+          </div>
+          <p class="drawer-copy">Open the editor table to change status, fleet allocation, and asset arrangement. Every saved row syncs across the board instantly.</p>
+          <button class="admin-launch" id="editorTrigger" type="button">Open Data Table</button>
+        </aside>
+      </div>
+
+      <section class="drawer-shell">
+        <div class="drawer-head">
+          <div>
+            <p class="eyebrow">Asset Ladder</p>
+            <h2 id="drawerTitle">HP asset ladder</h2>
+          </div>
+          <p class="drawer-copy" id="drawerCopy">Choose HP, LP, HR, or CC to open the full 001-060 ladder with status, marriage, and fleet allocation.</p>
+        </div>
+
+        <div class="ladder" aria-label="Asset category ladder">
+          <button class="ladder-row" data-category="HP" type="button">
+            <span class="ladder-code">HP</span>
+            <span class="ladder-title">High Pressure Assets</span>
+            <span class="ladder-range">06-02-001-001 to 06-02-001-060</span>
+          </button>
+          <button class="ladder-row" data-category="LP" type="button">
+            <span class="ladder-code">LP</span>
+            <span class="ladder-title">Low Pressure Assets</span>
+            <span class="ladder-range">06-03-001-001 to 06-03-001-060</span>
+          </button>
+          <button class="ladder-row" data-category="HR" type="button">
+            <span class="ladder-code">HR</span>
+            <span class="ladder-title">Hose Reel Assets</span>
+            <span class="ladder-range">06-04-001-001 to 06-04-001-060</span>
+          </button>
+          <button class="ladder-row" data-category="CC" type="button">
+            <span class="ladder-code">CC</span>
+            <span class="ladder-title">Control Cube Assets</span>
+            <span class="ladder-range">06-05-001-001 to 06-05-001-060</span>
+          </button>
+        </div>
+
+        <div class="drawer-panel" id="drawerPanel" aria-live="polite">
+          <div class="asset-list" id="assetList"></div>
+        </div>
+      </section>
+    </section>
+
+    <section class="view-shell fleetops-view" id="fleetOpsView" hidden>
+      <header class="subview-head fleetops-head">
+        <div class="eyebrow-row">
+          <p class="eyebrow">KNETIC VIEW</p>
+          <button class="login-pill" id="fleetLoginTrigger" type="button">Login</button>
+          <span class="auth-badge" id="fleetAuthBadge" hidden>Permitted Mode</span>
+          <button class="login-pill secondary" id="fleetArchiveTrigger" type="button">Archive</button>
+          <span class="preview-tag" id="fleetArchiveCount">0 archived</span>
+        </div>
+        <h1>Fleet Ops</h1>
+        <p class="subview-copy">Active fleets only, projected move calendar, package detail, and the first pass of the fleet job framework you outlined.</p>
+      </header>
+
+      <div class="fleet-ops-grid">
+        <section class="info-panel">
+          <div class="section-panel-title">
+            <div>
+              <p class="display-kicker">Operational Picture</p>
+              <h2>Fleet Snapshot</h2>
+            </div>
+            <span class="preview-tag">March focus</span>
+          </div>
+          <div class="fleet-summary-grid" id="fleetOpsSummaryGrid"></div>
+        </section>
+
+        <section class="info-panel">
+          <div class="section-panel-title">
+            <div>
+              <p class="display-kicker">Projected Moves</p>
+              <h2>Rig Move Board</h2>
+            </div>
+            <span class="preview-tag" id="fleetOpsMoveSummary">0 upcoming</span>
+          </div>
+          <div class="rig-move-grid" id="rigMoveBoard"></div>
+        </section>
+
+        <section class="info-panel">
+          <div class="section-panel-title">
+            <div>
+              <p class="display-kicker">Active Fleets</p>
+              <h2>Fleet Register</h2>
+            </div>
+            <span class="preview-tag" id="fleetOpsActiveSummary">25 active</span>
+          </div>
+          <div class="fleet-roster-grid" id="fleetOpsFleetGrid"></div>
+        </section>
+
+        <section class="info-panel">
+          <div class="section-panel-title">
+            <div>
+              <p class="display-kicker">Requests</p>
+              <h2>Maintenance Requests</h2>
+            </div>
+            <span class="preview-tag" id="maintenanceRequestSummary">0 requests</span>
+          </div>
+          <div class="maintenance-request-list" id="maintenanceRequestList"></div>
+        </section>
+
+        <section class="info-panel">
+          <div class="section-panel-title">
+            <div>
+              <p class="display-kicker">Live Packages</p>
+              <h2>Package Stream</h2>
+            </div>
+            <span class="preview-tag" id="fleetOpsPackageSummary">39 packages</span>
+          </div>
+          <div class="section-panel-grid" id="fleetOpsPackageGrid"></div>
+        </section>
+      </div>
+    </section>
+
+    <section class="view-shell placeholder-view" id="placeholderView" hidden>
+      <header class="subview-head placeholder-head">
+        <p class="eyebrow" id="placeholderKicker">KNETIC VIEW</p>
+        <h1 id="placeholderTitle">Metrics</h1>
+        <p class="subview-copy" id="placeholderCopy">Viewing is a work in Progress, come back after lunch!</p>
+      </header>
+
+      <div class="placeholder-layout" id="placeholderContent"></div>
+    </section>
+  </div>
+
+  <section class="overlay-shell" id="sectionOverlay" hidden>
+    <div class="overlay-backdrop" data-close="section"></div>
+    <div class="overlay-panel">
+      <div class="overlay-head">
+        <div>
+          <p class="display-kicker" id="sectionOverlayKicker">Section View</p>
+          <h2 id="sectionOverlayTitle">PRS Section</h2>
+        </div>
+        <button class="close-panel" id="closeSectionOverlay" type="button">Close</button>
+      </div>
+      <div class="overlay-body" id="sectionOverlayBody"></div>
+    </div>
+  </section>
+
+  <section class="overlay-shell detail-shell" id="detailOverlay" hidden>
+    <div class="overlay-backdrop" data-close="detail"></div>
+    <div class="overlay-panel detail-panel">
+      <div class="overlay-head">
+        <div>
+          <p class="display-kicker" id="detailOverlayKicker">Detail View</p>
+          <h2 id="detailOverlayTitle">Item Detail</h2>
+        </div>
+        <button class="close-panel" id="closeDetailOverlay" type="button">Close</button>
+      </div>
+      <div class="detail-layout">
+        <div class="detail-column notebook-column">
+          <div class="detail-column-head">
+            <h3>Maintenance Notes</h3>
+          </div>
+          <div class="note-composer">
+            <div class="composer-meta">
+              <span id="noteComposerState">New entry</span>
+              <button class="inline-control" id="cancelNoteEdit" type="button" hidden>Cancel Edit</button>
+            </div>
+            <textarea id="noteComposer" rows="3" placeholder="Add a maintenance note and press Enter."></textarea>
+          </div>
+          <div class="note-ledger" id="noteLedger"></div>
+        </div>
+        <div class="detail-column workorder-column">
+          <div class="detail-column-head">
+            <h3>Work Orders</h3>
+          </div>
+          <div class="workorder-composer">
+            <input id="workOrderIdInput" type="text" placeholder="WO-1234">
+            <input id="workOrderTextInput" type="text" placeholder="Brief work order note">
+            <button id="addWorkOrderButton" type="button">Add Work Order</button>
+          </div>
+          <div class="workorder-list" id="workOrderList"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="overlay-shell auth-shell" id="loginOverlay" hidden>
+    <div class="overlay-backdrop" data-close="login"></div>
+    <div class="overlay-panel auth-panel">
+      <div class="overlay-head">
+        <div>
+          <p class="display-kicker">Permitted Access</p>
+          <h2>Login Required</h2>
+        </div>
+        <button class="close-panel" id="closeLoginOverlay" type="button">Close</button>
+      </div>
+      <form class="auth-form" id="loginForm">
+        <label>
+          <span>Name</span>
+          <input id="usernameInput" type="text" autocomplete="nickname" placeholder="Optional display name">
+        </label>
+        <label>
+          <span>Admin Token</span>
+          <input id="passwordInput" type="password" autocomplete="current-password" placeholder="Paste KNETIC_ADMIN_TOKEN">
+        </label>
+        <p class="auth-error" id="loginError" hidden>Invalid admin token.</p>
+        <button class="auth-submit" type="submit">Unlock Permitted Mode</button>
+      </form>
+    </div>
+  </section>
+
+  <section class="overlay-shell editor-shell" id="editorOverlay" hidden>
+    <div class="overlay-backdrop" data-close="editor"></div>
+    <div class="overlay-panel editor-panel">
+      <div class="overlay-head">
+        <div>
+          <p class="display-kicker">Permitted Only</p>
+          <h2>Live Data Table</h2>
+        </div>
+        <button class="close-panel" id="closeEditorOverlay" type="button">Close</button>
+      </div>
+      <div class="editor-copy-row">
+        <p class="drawer-copy">Status, allocation, and asset edits sync directly into Testing &amp; Deployment and Fleet Ops.</p>
+        <span class="preview-tag">Auto Update</span>
+      </div>
+      <div class="editor-table-shell">
+        <table class="editor-table">
+          <thead>
+            <tr>
+              <th>Status</th>
+              <th>Allocation</th>
+              <th>HP</th>
+              <th>LP</th>
+              <th>HR</th>
+              <th>CC</th>
+            </tr>
+          </thead>
+          <tbody id="editorTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <script src="app.js"></script>
+</body>
+</html>

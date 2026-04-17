@@ -304,7 +304,7 @@ create table if not exists public.prs_jds (
 create table if not exists public.npt_events (
   id uuid primary key default gen_random_uuid(),
   submission_id uuid not null unique references public.form_submissions(id) on delete cascade,
-  fleet_number integer references public.fleets(fleet_number) on delete set null,
+  fleet_number text references public.fleets(fleet_number) on delete set null,
   customer text,
   region text,
   job_number text,

@@ -60,7 +60,7 @@ create table if not exists public.assets (
   status text not null default 'standby' check (status in ('ready', 'testing', 'queue', 'oos', 'inuse', 'standby')),
   current_allocation text,
   current_row_id text,
-  current_fleet_number integer references public.fleets(fleet_number) on delete set null,
+  current_fleet_number text references public.fleets(fleet_number) on delete set null,
   upgrade_progress numeric(5,4) check (upgrade_progress is null or (upgrade_progress >= 0 and upgrade_progress <= 1)),
   notes text,
   created_at timestamptz not null default now(),
@@ -139,7 +139,7 @@ create table if not exists public.form_submissions (
   submitted_by_name text,
   submitted_by_email text,
   region text,
-  fleet_number integer references public.fleets(fleet_number) on delete set null,
+  fleet_number text references public.fleets(fleet_number) on delete set null,
   job_id uuid references public.jobs(id) on delete set null,
   customer text,
   asset_code text references public.assets(short_code) on delete set null,
@@ -181,7 +181,7 @@ create table if not exists public.filter_inspections (
   id uuid primary key default gen_random_uuid(),
   submission_id uuid not null unique references public.form_submissions(id) on delete cascade,
   filter_type text not null,
-  fleet_number integer references public.fleets(fleet_number) on delete set null,
+  fleet_number text references public.fleets(fleet_number) on delete set null,
   asset_code text references public.assets(short_code) on delete set null,
   customer text,
   region text,
@@ -194,7 +194,7 @@ create table if not exists public.filter_inspections (
 create table if not exists public.prs_daily_checklists (
   id uuid primary key default gen_random_uuid(),
   submission_id uuid not null unique references public.form_submissions(id) on delete cascade,
-  fleet_number integer references public.fleets(fleet_number) on delete set null,
+  fleet_number text references public.fleets(fleet_number) on delete set null,
   control_cube_asset_code text references public.assets(short_code) on delete set null,
   hp_asset_code text references public.assets(short_code) on delete set null,
   lp_asset_code text references public.assets(short_code) on delete set null,
@@ -214,7 +214,7 @@ create table if not exists public.prs_daily_checklists (
 create table if not exists public.rig_up_checklists (
   id uuid primary key default gen_random_uuid(),
   submission_id uuid not null unique references public.form_submissions(id) on delete cascade,
-  fleet_number integer references public.fleets(fleet_number) on delete set null,
+  fleet_number text references public.fleets(fleet_number) on delete set null,
   lpcc_asset_code text references public.assets(short_code) on delete set null,
   hp_asset_code text references public.assets(short_code) on delete set null,
   lp_asset_code text references public.assets(short_code) on delete set null,
@@ -258,7 +258,7 @@ create table if not exists public.prs_jds (
   region text,
   customer text,
   job_number text,
-  fleet_number integer references public.fleets(fleet_number) on delete set null,
+  fleet_number text references public.fleets(fleet_number) on delete set null,
   rig_in_date timestamptz,
   fuel_type text,
   genset_type text,
@@ -350,9 +350,9 @@ create table if not exists public.activity_events (
   created_at timestamptz not null default now()
 );
 
---create index if not exists idx_fleets_move_date on public.fleets(move_date);
+create index if not exists idx_fleets_move_date on public.fleets(move_date);
 create index if not exists idx_assets_status on public.assets(status);
-create index if not exists idx_assets_fleet on public.assets(current_fleet_number);
+-- create index if not exists idx_assets_fleet on public.assets(current_fleet_number);
 create index if not exists idx_board_rows_status on public.board_rows(status);
 create index if not exists idx_form_submissions_form on public.form_submissions(form_id);
 create index if not exists idx_form_submissions_submitted_at on public.form_submissions(submitted_at desc);
@@ -415,7 +415,7 @@ begin
       br.allocation,
       case
         when br.allocation ~* '^fleet\s*[0-9]+$'
-          then regexp_replace(br.allocation, '\D', '', 'g')::integer
+          then regexp_replace(br.allocation, '[^0-9]', '', 'g')
         else null
       end as fleet_number,
       unnest(array[br.hp_asset_code, br.lp_asset_code, br.hr_asset_code, br.cc_asset_code]) as asset_code

@@ -350,7 +350,7 @@ create table if not exists public.activity_events (
   created_at timestamptz not null default now()
 );
 
-create index if not exists idx_fleets_move_date on public.fleets(move_date);
+--create index if not exists idx_fleets_move_date on public.fleets(move_date);
 create index if not exists idx_assets_status on public.assets(status);
 create index if not exists idx_assets_fleet on public.assets(current_fleet_number);
 create index if not exists idx_board_rows_status on public.board_rows(status);

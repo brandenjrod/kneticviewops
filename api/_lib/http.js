@@ -36,18 +36,12 @@ function normalizeObjectValues(record) {
       if (Array.isArray(value) && value.length === 1) {
         return [key, value[0]];
       }
-
       return [key, value];
     })
   );
 }
 
-/**
- * Parse multipart/form-data body without external dependencies.
- * Jotform sends webhooks as multipart with a `rawRequest` field containing
- * the actual JSON submission data, plus top-level fields like formID and submissionID.
- */
-function parseMultipart(raw, boundary) {
+function parseMultipartString(raw, boundary) {
   const result = {};
   const delimiter = `--${boundary}`;
   const parts = raw.split(delimiter);
@@ -57,42 +51,63 @@ function parseMultipart(raw, boundary) {
       continue;
     }
 
-    // Split headers from body on double CRLF
     const headerBodySplit = part.indexOf("\r\n\r\n");
     if (headerBodySplit === -1) continue;
 
     const headerSection = part.slice(0, headerBodySplit);
-    // Body ends before trailing \r\n
     const body = part.slice(headerBodySplit + 4).replace(/\r\n$/, "");
 
-    // Extract field name from Content-Disposition header
     const nameMatch = headerSection.match(/name="([^"]+)"/);
     if (!nameMatch) continue;
 
-    const fieldName = nameMatch[1];
-    result[fieldName] = body;
+    result[nameMatch[1]] = body;
   }
 
   return result;
 }
 
-async function parseIncomingBody(req) {
-  if (req.body && typeof req.body === "object" && !Buffer.isBuffer(req.body)) {
-    // Vercel may pre-parse multipart as an object with a rawRequest string field
-    // If so, normalize it the same way we do for raw multipart
-    if (req.body.rawRequest || req.body.formID || req.body.submissionID) {
-      const fields = req.body;
-      let merged = { ...fields };
-      if (fields.rawRequest) {
-        try {
-          const parsed = typeof fields.rawRequest === "string"
-            ? JSON.parse(fields.rawRequest)
-            : fields.rawRequest;
-          merged = { ...fields, ...parsed };
-        } catch (e) {}
-      }
-      return merged;
+function mergeJotformFields(fields) {
+  let merged = { ...fields };
+
+  if (fields.rawRequest) {
+    try {
+      const parsed = typeof fields.rawRequest === "string"
+        ? JSON.parse(fields.rawRequest)
+        : fields.rawRequest;
+      merged = { ...fields, ...parsed };
+    } catch (e) {
+      // keep as-is
     }
+  }
+
+  return merged;
+}
+
+async function parseIncomingBody(req) {
+  const contentType = String(req.headers["content-type"] || "").toLowerCase();
+
+  if (req.body && typeof req.body === "object" && !Buffer.isBuffer(req.body)) {
+
+    // Already correctly parsed with Jotform fields
+    if (req.body.formID || req.body.submissionID || req.body.rawRequest) {
+      return mergeJotformFields(req.body);
+    }
+
+    // Vercel mangled the multipart — action key contains the rest of the body
+    if (
+      typeof req.body.action === "string" &&
+      req.body.action.includes("Content-Disposition") &&
+      contentType.includes("multipart/form-data")
+    ) {
+      const boundaryMatch = contentType.match(/boundary=([^\s;]+)/);
+      if (boundaryMatch) {
+        const boundary = boundaryMatch[1];
+        const reconstructed = `--${boundary}\r\nContent-Disposition: form-data; name="action"\r\n\r\n\r\n${req.body.action}`;
+        const fields = parseMultipartString(reconstructed, boundary);
+        return mergeJotformFields(fields);
+      }
+    }
+
     return req.body;
   }
 
@@ -102,8 +117,6 @@ async function parseIncomingBody(req) {
     return {};
   }
 
-  const contentType = String(req.headers["content-type"] || "").toLowerCase();
-
   if (contentType.includes("application/json")) {
     return JSON.parse(raw);
   }
@@ -112,30 +125,11 @@ async function parseIncomingBody(req) {
     return normalizeObjectValues(querystring.parse(raw));
   }
 
-  // Handle multipart/form-data (Jotform webhook format)
   if (contentType.includes("multipart/form-data")) {
     const boundaryMatch = contentType.match(/boundary=([^\s;]+)/);
     if (boundaryMatch) {
-      const boundary = boundaryMatch[1];
-      const fields = parseMultipart(raw, boundary);
-
-      // Jotform puts the real submission data in `rawRequest` as a JSON string
-      // and top-level metadata in formID, submissionID etc.
-      // Merge rawRequest fields into the result so jotform.js can find them.
-      let merged = { ...fields };
-
-      if (fields.rawRequest) {
-        try {
-          const parsed = JSON.parse(fields.rawRequest);
-          // rawRequest fields take priority for question answers
-          // but keep top-level fields like formID, submissionID
-          merged = { ...fields, ...parsed };
-        } catch (e) {
-          // rawRequest wasn't valid JSON, keep fields as-is
-        }
-      }
-
-      return merged;
+      const fields = parseMultipartString(raw, boundaryMatch[1]);
+      return mergeJotformFields(fields);
     }
   }
 
